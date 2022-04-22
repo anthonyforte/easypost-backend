@@ -51,6 +51,19 @@ async def buy_shipment(shipment_id: str, rate_id: str = None):
 		raise HTTPException(status_code=e.http_status, detail=e.message)
 
 
+@app.get("/shipments")
+async def get_shipments(page_size: int = 20, before_id: str = None):
+    easypost.api_key = test_api_key
+    try:
+        response = easypost.Shipment.all(
+            page_size=page_size,
+            before_id=before_id
+        )
+        return response.to_dict()
+    except easypost.error.Error as e:
+        raise HTTPException(status_code=e.http_status, detail=e.message)
+
+
 @app.post("/addresses")
 async def create_address(address: Address):
 	easypost.api_key = test_api_key
